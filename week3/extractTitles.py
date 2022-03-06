@@ -3,6 +3,14 @@ import random
 import xml.etree.ElementTree as ET
 import argparse
 from pathlib import Path
+import nltk
+# nltk.download('punkt')
+# nltk.download('stopwords')
+from nltk.stem.snowball import SnowballStemmer
+from nltk.corpus import stopwords
+from nltk import word_tokenize
+from nltk.tokenize import RegexpTokenizer
+import string
 
 directory = r'/workspace/search_with_machine_learning_course/data/pruned_products'
 parser = argparse.ArgumentParser(description='Process some integers.')
@@ -26,8 +34,34 @@ if args.input:
 sample_rate = args.sample_rate
 
 def transform_training_data(name):
-    # IMPLEMENT
-    return name.replace('\n', ' ')
+    # name = name.replace('\n', ' ').lower()
+    # name = name.replace(u"\u2122", '').replace(u"\u00AE", '')
+
+    # name = name.translate(str.maketrans('', '', string.punctuation))
+
+    # # snowball = SnowballStemmer("english")
+    # # tokenizer = RegexpTokenizer(r'((?<=[^\w\s])\w(?=[^\w\s])|(\W))+', gaps=True)
+    # tokens = word_tokenize(name)
+    # # tokens = tokenizer.tokenize(name)
+    # tokens = [token for token in tokens if token not in stopwords.words('english')]
+    # # tokens = [snowball.stem(token) for token in tokens]
+    # name = ' '.join(tokens)
+    # # name = name.encode('ascii', "ignore").decode('ascii')
+
+    # tokenizer = RegexpTokenizer(r'((?<=[^\w\s])\w(?=[^\w\s])|(\W))+', gaps=True)
+    # snowball = SnowballStemmer("english")
+
+    # name = name.replace('\n', ' ').lower()
+    # tokens = tokenizer.tokenize(name)
+    # tokens = [snowball.stem(token) for token in tokens]
+    # name = " ".join(tokens)
+    # return name
+    stemmer = SnowballStemmer("english")
+    cleaned = ''.join([i for i in name.lower() if i not in string.punctuation])
+    tokens = nltk.word_tokenize(cleaned)
+    tokens = [token for token in tokens if token not in stopwords.words('english')]
+    return " ".join([stemmer.stem(token.replace(u"\u2122", '').replace(u"\u00AE", '')) for token in tokens])
+    # return name
 
 # Directory for product data
 
